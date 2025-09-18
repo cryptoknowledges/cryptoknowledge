@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node Information</title>
+  <link rel="stylesheet" type="text/css" href="node.css">
+</head>
+<body>
+  <!-- Navbar -->
+<header>
+  <nav>
+    <div class="logo">Node Information</div>
+    <ul>
+      <li><a href="index.html"><b>Blockchain</b></a></li>
+      <!-- Dropdown -->
+      <li class="dropdown">
+        <a href="#hero"><b>Nodes</b>▼</a>
+        <ul class="dropdown-menu">
+          <li><a href="#nodes">Node</a></li>
+          <li><a href="#fullnode">Full Node</a></li>
+          <li><a href="#lightnode">Light Node(SPV)</a></li>
+          <li><a href="#minernode">Miner Node</a></li>
+          <li><a href="#masternode">Master Node</a></li>
+          <li><a href="#prunednode">Pruned Node</a></li>
+          <li><a href="#archivalnode">Archival Node</a></li>
+          <li><a href="#validatornode">Validator Node</a></li>
+        </ul>
+      </li>
+      <li><a href="crypto.html"><b>Crypto</b></a></li>
+      <li><a href="exchange.html"><b>Exchange</b></a></li>
+    </ul>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+  </nav>
+</header>
+
+<style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; }
+    body { 
+      font-family: Arial, sans-serif; 
+      line-height: 1.6; 
+      background: #f4f4f4; color: #333; }
+    a { 
+      text-decoration: none; 
+      color: inherit; }
+
+    /* Navbar */
+    header {
+      background: #222;
+      color: #fff;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+    nav .logo { font-size: 1.5rem; font-weight: bold; color: lightgreen; }
+    nav ul { display: flex; list-style: none; gap: 20px; }
+    nav ul li a { color: #fff; font-weight: bold; transition: 0.3s; }
+    nav ul li a:hover { color: lightgreen; }
+
+    /* Dropdown */
+  .dropdown {
+  position: relative;}
+
+  .dropdown a {
+  cursor: pointer;}
+
+  .dropdown-menu {
+  display: none;
+  position: absolute;
+  background: #333;
+  top: 20px;
+  left: -50px;
+  list-style: none;
+  padding: 10px 0;
+  border-radius: 5px;
+  min-width: 180px;
+  z-index: 1000;}
+
+  .dropdown-menu li {
+  padding: 8px 15px;}
+
+  .dropdown-menu li a {
+  color: #fff;
+  display: block;
+  font-weight: normal;}
+
+  .dropdown-menu li a:hover {
+  color: lightgreen;
+  font-style: bold;}
+
+  /* Show dropdown on hover (desktop) */
+  .dropdown:hover .dropdown-menu {
+  display: block;}
+
+  /* Hamburger */
+  .menu-toggle {
+    display: none;
+    font-size: 1.8rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: url("https://media.istockphoto.com/id/1369900958/vector/blockchain-technology-with-icons-abstract-hexagon-background.jpg?s=612x612&w=0&k=20&c=wXJkPcahNnAgsxgo3cMTYa2PERqWRXm2Gm0kJy1-dsg=") no-repeat center center/cover;
+      color: #fff;
+      text-align: center;
+      padding: 170px 20px;
+    }
+    .hero h1 { font-size: 3rem; margin-bottom: 15px; color: black; display: none;}
+    .hero p { font-size: 2rem; max-width: 1200px; margin: 0 auto; color: black; }
+
+    /* Section */
+    section { padding: 60px 20px; max-width: 1300px; margin: auto; }
+    section h2 {
+      font-size: 3rem;
+      color: #4caf50;
+      text-align: center;
+    }
+    section p { font-size: 1.1rem; margin-bottom: 20px; text-align: justify; }
+    .features, .applications {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      cursor: default;
+    }
+
+    /* Footer */
+    footer {
+      background: #222;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+  /* -------- Nodes Section Styles -------- */
+  #nodes {
+    padding: 60px 20px;
+    max-width: 1300px;
+    margin: auto;
+    cursor: default;
+  }
+
+  #nodes h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #4caf50;
+    text-align: center;
+  }
+
+  .nodes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .nodes .card {
+    background: black;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+  }
+
+  .nodes .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .nodes .card h3 {
+    margin-bottom: 10px;
+   color: #4caf50; 
+   font-style:bold;
+    font-size: 1.3rem;
+  }
+
+  .nodes .card p {
+    font-size: 1.07rem;
+    text-align: justify;
+    color: white;
+  }
+  .block {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .block:last-child {
+    border-bottom: none;
+  }
+
+  .block h3 {
+    margin-bottom: 12px;
+    color: #222;
+    font-size: 1.4rem;
+    font-weight: 600;
+    border-left: 4px solid #00d8a7;
+    padding: 10px;
+  }
+
+  .block p, 
+  .block ul {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #444;
+    text-align: justify;
+  }
+
+  .block ul {
+    list-style: disc;
+    padding-left: 20px;
+  }
+  /* -------- Combine Styles Section -------- */
+  
+  /* -------- Full Node Section Styles -------- */
+  #fullnode {
+    padding: 50px 0px;
+    max-width: 1200px;
+    margin: auto;
+    cursor: default;
+  }
+
+  #fullnode h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #4caf50;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .fullnode-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  /* -------- Full Node Section Styles -------- */
+  /* -------- Light Node Section Styles -------- */
+  #lightnode {
+    padding: 50px 0px;
+    max-width: 1200px;
+    margin: auto;
+    cursor: default;
+  }
+
+  #lightnode h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #4caf50;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .lightnode-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  /* -------- Light Node Section Styles -------- */
+  /* -------- Mainer Node Section Styles -------- */
+  #minernode {
+    padding: 50px 0px;
+    max-width: 1200px;
+    margin: auto;
+    cursor: default;
+  }
+
+  #minernode h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #4caf50;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .minernode-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  /* -------- Mainer Node Section Styles -------- */
+  /* -------- Master Node Section Styles -------- */
+  #masternode {
+    padding: 50px 0px;
+    max-width: 1200px;
+    margin: auto;
+    cursor: default;
+  }
+
+  #masternode h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #4caf50;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .masternode-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  /* -------- Master Node Section Styles -------- */
+
+  /* -------- Pruned Node Section Styles -------- */
+  #prunednode {
+    padding: 50px 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  #prunednode h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #4caf50;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .prunednode-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  /* -------- Pruned Node Section Styles -------- */
+
+  /* -------- Archival Node Section -------- */
+  #archivalnode {
+    padding: 50px 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  #archivalnode h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #4caf50;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .archivalnode-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  /* -------- Archival Node Section -------- */
+
+  /* -------- Validator Node Section Styles -------- */
+  #validatornode {
+    padding: 50px 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  #validatornode h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #4caf50;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .validatornode-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  /* -------- Validator Node Section Styles -------- */
+
+  /* ✅ Professional Responsive Design */
+  @media (max-width: 768px) {
+     nav ul {
+        display: none;
+        flex-direction: column;
+        background: #222;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        width: 200px;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      nav ul.show { display: flex; }
+      .menu-toggle { display: block; }
+    #fullnode {
+      padding: 40px 15px;
+    }
+
+    .dropdown-menu {
+    position: static;
+    background: #222;
+    padding-left: 20px;}
+
+    #fullnode h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+    #lightnode {
+      padding: 40px 15px;
+    }
+    #lightnode h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+    #minernode {
+      padding: 40px 15px;
+    }
+    #minernode h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+    #masternode {
+      padding: 40px 15px;
+    }
+    #masternode h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+    #prunednode {
+      padding: 40px 15px;
+    }
+    #prunednode h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+    #archivalnode {
+      padding: 40px 15px;
+    }
+    #archivalnode h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+    #validatonode {
+      padding: 40px 15px;
+    }
+    #validatonode h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+
+    .block h3 {
+      font-size: 1.2rem;
+    }
+    .block p, .block ul {
+      font-size: 1rem;
+    }
+    #nodes h2 {
+      font-size: 1.8rem;
+    }
+    .nodes .card {
+      padding: 15px;
+    }
+    .nodes .card h3 {
+      font-size: 1.2rem;
+    }
+    .nodes .card p {
+      font-size: 0.95rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #fullnode {
+      padding: 30px 12px;
+    }
+    #fullnode h2 {
+      font-size: 1.6rem;
+    }
+    #lightnode {
+      padding: 30px 12px;
+    }
+    #lightnode h2 {
+      font-size: 1.6rem;
+    }
+    #minernode {
+      padding: 30px 12px;
+    }
+    #minernode h2 {
+      font-size: 1.6rem;
+    }
+    #masternode {
+      padding: 30px 12px;
+    }
+    #masternode h2 {
+      font-size: 1.6rem;
+    }
+    #prunednode {
+      padding: 30px 12px;
+    }
+    #prunednode h2 {
+      font-size: 1.6rem;
+    }
+    #archivalnode {
+      padding: 30px 12px;
+    }
+    #archivalnode h2 {
+      font-size: 1.6rem;
+    }
+    #validatonode {
+      padding: 30px 12px;
+    }
+    #validatonode h2 {
+      font-size: 1.6rem;
+    }
+
+    .block h3 {
+      font-size: 1.1rem;
+    }
+    .block p, .block ul {
+      font-size: 0.95rem;
+    }
+    #nodes {
+      padding: 40px 15px;
+    }
+    #nodes h2 {
+      font-size: 1.5rem;
+    }
+    .nodes {
+      grid-template-columns: 1fr;
+    }
+    .nodes .card {
+      padding: 12px;
+    }
+    .nodes .card h3 {
+      font-size: 1.1rem;
+    }
+    .nodes .card p {
+      font-size: 0.9rem;
+    }
+  }
+  /* ✅ Professional Responsive Design */
+  /* -------- Nodes Section Styles -------- */
+  </style>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>Welcome to Blockchain World</h1>
+  </div>
+  <!-- Blockchain Nodes Section -->
+  <section id="nodes">
+  <h2>Blockchain Nodes</h2>
+  <p style="text-align:center; max-width:1100px; margin: 0 auto 50px; font-size: 1.3rem;">
+    Blockchain nodes are computers that keep the network running by verifying, storing, and sharing data. 
+    Different types of nodes serve different purposes, ensuring security, transparency, and decentralization.
+  </p>
+  <div class="nodes">
+    <div class="card">
+      <h3>Full Node</h3>
+      <p>Stores the complete blockchain history and validates all transactions. The backbone of the network’s security.</p>
+    </div>
+    <div class="card">
+      <h3>Light Node (SPV)</h3>
+      <p>Stores only block headers and relies on full nodes for data. Ideal for mobile wallets and lightweight apps.</p>
+    </div>
+    <div class="card">
+      <h3>Miner Node</h3>
+      <p>Creates new blocks by solving puzzles (Proof of Work) or staking (Proof of Stake). Adds verified transactions to the chain.</p>
+    </div>
+    <div class="card">
+      <h3>Master Node</h3>
+      <p>Provides advanced features like governance, instant transactions, or privacy. Requires a significant coin stake.</p>
+    </div>
+    <div class="card">
+      <h3>Pruned Node</h3>
+      <p>Acts like a full node but deletes old data once a storage limit is reached, saving space while staying secure.</p>
+    </div>
+    <div class="card">
+      <h3>Archival Node</h3>
+      <p>Maintains the entire blockchain history without pruning. Useful for explorers, analytics, and research.</p>
+    </div>
+    <div class="card">
+      <h3>Validator Node</h3>
+      <p>Used in Proof of Stake systems. Validates and creates blocks by staking coins instead of mining.</p>
+    </div>
+  </div>
+  </section>
+ <!-- Full Node Section -->
+  <section id="fullnode">
+  <h2>Full Node</h2>
+
+  <div class="fullnode-content">
+    <div class="block">
+      <h3>What is a Full Node?</h3>
+      <p>
+        A full node is a computer that stores the entire blockchain ledger and enforces all consensus rules. 
+        It verifies every transaction and block independently without relying on third parties.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Key Functions</h3>
+      <ul>
+        <li>Validates all transactions</li>
+        <li>Verifies new blocks</li>
+        <li>Maintains full blockchain copy</li>
+        <li>Broadcasts valid data to other nodes</li>
+        <li>Enforces consensus rules</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Advantages</h3>
+      <p>
+        • Provides maximum security <br>
+        • Ensures decentralization <br>
+        • Trustless verification <br>
+        • Independent of third parties
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Disadvantages</h3>
+      <p>
+        • Requires large storage space <br>
+        • High bandwidth & energy use <br>
+        • Slower setup compared to light nodes
+      </p>
+    </div>
+  </div>
+  </section>
+  <!-- Full Node Section -->
+
+  <!-- Light Node Section -->
+  <section id="lightnode">
+  <h2>Light Node (SPV)</h2>
+
+  <div class="lightnode-content">
+    <div class="block">
+      <h3>What is a Light Node?</h3>
+      <p>
+        A Light Node, also called an SPV (Simplified Payment Verification) node, does not store the entire blockchain. 
+        Instead, it only keeps block headers and relies on Full Nodes for detailed transaction data. 
+        This makes it lightweight and suitable for mobile devices and applications with limited resources.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Key Functions</h3>
+      <ul>
+        <li>Stores only block headers instead of the full ledger</li>
+        <li>Relies on Full Nodes for complete transaction details</li>
+        <li>Verifies transactions using Merkle proofs</li>
+        <li>Provides fast and lightweight blockchain access</li>
+        <li>Supports mobile wallets and lightweight apps</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Advantages</h3>
+      <p>
+        • Requires minimal storage space <br>
+        • Faster synchronization <br>
+        • Low bandwidth and energy consumption <br>
+        • Ideal for mobile and IoT devices
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Disadvantages</h3>
+      <p>
+        • Relies on Full Nodes for data <br>
+        • Less secure compared to Full Nodes <br>
+        • Not suitable for full blockchain validation <br>
+        • Trust assumptions are higher
+      </p>
+    </div>
+  </div>
+  </section>
+  <!-- Light Node Section -->
+
+  <!-- Miner Node Section -->
+  <section id="minernode">
+  <h2>Miner Node</h2>
+
+  <div class="minernode-content">
+    <div class="block">
+      <h3>What is a Miner Node?</h3>
+      <p>
+        A Miner Node is a special type of blockchain node responsible for creating new blocks. 
+        Miner Nodes validate pending transactions, package them into a block, and attempt to add that block to the blockchain 
+        through mining mechanisms such as <strong>Proof of Work (PoW)</strong> or <strong>Proof of Stake (PoS)</strong>. 
+        In return, miners are rewarded with cryptocurrency incentives.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Key Functions</h3>
+      <ul>
+        <li>Collects and validates pending transactions from the mempool</li>
+        <li>Creates a candidate block containing valid transactions</li>
+        <li>Uses consensus algorithms (PoW, PoS) to propose a new block</li>
+        <li>Competes with other miners/validators to add the block</li>
+        <li>Broadcasts new blocks to the network once validated</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Advantages</h3>
+      <p>
+        • Secures the blockchain network <br>
+        • Provides incentives through mining rewards <br>
+        • Ensures decentralization by distributing power <br>
+        • Processes and validates global transactions
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Disadvantages</h3>
+      <p>
+        • High energy consumption (especially PoW) <br>
+        • Requires expensive hardware (ASICs, GPUs) <br>
+        • Competitive and resource-intensive <br>
+        • May lead to centralization in large mining pools
+      </p>
+    </div>
+  </div>
+  </section>
+  <!-- Miner Node Section -->
+  <!-- Master Node Section -->
+  <section id="masternode">
+  <h2>Master Node</h2>
+
+  <div class="masternode-content">
+    <div class="block">
+      <h3>What is a Master Node?</h3>
+      <p>
+        A Master Node is a specialized blockchain node that performs advanced functions beyond normal validation. 
+        Unlike Miner Nodes, Master Nodes do not create new blocks but instead maintain the blockchain by 
+        performing services such as transaction validation, governance voting, and enabling privacy features.  
+        To operate a Master Node, users must usually lock a certain amount of cryptocurrency as collateral.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Key Functions</h3>
+      <ul>
+        <li>Validates and relays transactions across the network</li>
+        <li>Participates in governance and voting mechanisms</li>
+        <li>Provides additional services (e.g., InstantSend, PrivateSend in Dash)</li>
+        <li>Earns rewards for supporting network stability</li>
+        <li>Requires collateral (staking) to operate securely</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Advantages</h3>
+      <p>
+        • Generates passive income through rewards <br>
+        • Strengthens decentralization and governance <br>
+        • Provides advanced features such as privacy and fast transactions <br>
+        • Encourages long-term holding through collateral requirement
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Disadvantages</h3>
+      <p>
+        • Requires large collateral investment <br>
+        • Does not participate in block mining <br>
+        • Setup and maintenance can be complex <br>
+        • Risk of centralization if few entities control many Master Nodes
+      </p>
+    </div>
+  </div>
+  </section>
+  <!-- Master Node Section -->
+
+  <!-- Pruned Node Section -->
+  <section id="prunednode">
+  <h2>Pruned Node in Blockchain</h2>
+
+  <div class="prunednode-content">
+    <div class="block">
+      <h3>What is a Pruned Node?</h3>
+      <p>
+        A Pruned Node is a type of full node that initially downloads and verifies the entire blockchain but later discards 
+        old block data to save storage space. It only keeps the most recent blocks while maintaining all necessary data 
+        to validate new transactions and blocks. This makes it more lightweight compared to a full archival node.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Key Functions</h3>
+      <ul>
+        <li>Validates all new transactions and blocks</li>
+        <li>Keeps only recent blockchain data, discarding old blocks</li>
+        <li>Maintains the current state of the blockchain</li>
+        <li>Ensures security and decentralization with reduced storage</li>
+        <li>Acts as a middle ground between full and light nodes</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Advantages</h3>
+      <p>
+        • Requires less disk space than full archival nodes <br>
+        • Still validates transactions independently <br>
+        • Contributes to network security and decentralization <br>
+        • Suitable for users with limited hardware resources
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Disadvantages</h3>
+      <p>
+        • Cannot serve the full history of the blockchain <br>
+        • Limited functionality compared to full archival nodes <br>
+        • Less useful for developers or researchers needing historical data <br>
+        • Still requires significant initial download of the full blockchain
+      </p>
+    </div>
+  </div>
+  </section>
+  <!-- Pruned Node Section -->
+
+  <!-- Archival Node Section -->
+  <section id="archivalnode">
+  <h2>Archival Node in Blockchain</h2>
+
+  <div class="archivalnode-content">
+    <div class="block">
+      <h3>What is an Archival Node?</h3>
+      <p>
+        An Archival Node is a type of Full Node that stores the entire history of the blockchain, 
+        including all past transactions, smart contracts, and states. 
+        Unlike Pruned Nodes, it does not discard old data and instead preserves the complete blockchain ledger.  
+        Archival Nodes are essential for services that require historical data, such as blockchain explorers, analytics, and forensics.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Key Functions</h3>
+      <ul>
+        <li>Stores the full blockchain history without pruning</li>
+        <li>Provides complete access to old and new transactions</li>
+        <li>Supports blockchain explorers and research platforms</li>
+        <li>Enables forensic analysis and auditing</li>
+        <li>Maintains network transparency and accountability</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Advantages</h3>
+      <p>
+        • Offers complete access to all blockchain data <br>
+        • Supports developers, auditors, and researchers <br>
+        • Enables advanced analytics and historical queries <br>
+        • Ensures maximum transparency and verifiability
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Disadvantages</h3>
+      <p>
+        • Requires very high storage capacity (hundreds of GBs or more) <br>
+        • High bandwidth and energy consumption <br>
+        • Costly to operate and maintain <br>
+        • Not practical for regular users with limited hardware
+      </p>
+    </div>
+  </div>
+  </section>
+  <!-- Archival Node Section -->
+  <!-- Validator Node Section -->
+  <section id="validatornode">
+  <h2>Validator Node</h2>
+
+  <div class="validatornode-content">
+    <div class="block">
+      <h3>What is a Validator Node?</h3>
+      <p>
+        A validator node is responsible for verifying and validating transactions and blocks in a proof-of-stake (PoS) blockchain. 
+        It helps maintain network security, consensus, and integrity by participating in block production and validation.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Key Functions</h3>
+      <ul>
+        <li>Validates transactions and blocks</li>
+        <li>Proposes new blocks (if selected)</li>
+        <li>Participates in consensus protocols</li>
+        <li>Stakes cryptocurrency as collateral</li>
+        <li>Earns rewards for honest behavior</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Advantages</h3>
+      <p>
+        • Generates staking rewards <br>
+        • Strengthens network security <br>
+        • Enables active role in governance <br>
+        • Supports blockchain decentralization
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>Disadvantages</h3>
+      <p>
+        • Requires technical expertise <br>
+        • Risk of slashing for faults or downtime <br>
+        • Needs constant uptime and monitoring <br>
+        • High initial staking requirement
+      </p>
+    </div>
+  </div>
+  </section>
+<!-- Validator Node Section -->
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Blockchain Info | Designed by "SR" | All rights reserved.</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.querySelector("nav ul").classList.toggle("show");
+    }
+  </script>
+</body>
+</html>

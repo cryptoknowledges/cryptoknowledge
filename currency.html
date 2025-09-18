@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Crypto Prices</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <h1 style="background-color: white;">Top 250 Cryptocurrency Prices</h1>
+  <div class="top-bar">
+    <input type="text" id="search" placeholder="Search coins..." aria-label="Search coins" />
+    <button id="theme-toggle">Dark Mode</button>
+  </div>
+
+  <table id="crypto-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Coin</th>
+        <th>Symbol</th>
+        <th>Price (USD)</th>
+        <th>Market Cap</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="pagination" id="pagination-controls"></div>
+
+  <!-- Modal -->
+  <div id="crypto-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <style>
+/* ---------- General Styles ---------- */
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  padding: 20px;
+  margin: 0;
+}
+body.dark-mode {
+  background: #121212;
+  color: #eee;
+}
+
+/* ---------- Header ---------- */
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-style: bold;
+  color: black;
+  margin-bottom: 20px;
+}
+.top-bar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* ---------- Search + Button ---------- */
+#search {
+  flex: 1;
+  min-width: 200px;
+  max-width: 500px;
+  height: 40px;
+  border-radius: 50px;
+  padding-left: 1.5rem;
+  border: 0px solid #ddd;
+  box-shadow: 0px 0px 6px 2px lightgreen;
+  font-size: 1rem;
+  outline: none;
+}
+#theme-toggle {
+  min-width: 120px;
+  height: 40px;
+  font-size: 1rem;
+  border: none;
+  box-shadow: 0px 0px 6px 2px lightgreen;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+/* ---------- Table ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+th, td {
+  padding: 0.6rem;
+  border: 0px solid #ccc;
+  font-size: 1rem;
+  text-align: center;
+}
+th {
+  background: #4caf50;
+  color: white;
+}
+tr:hover {
+  background: rgba(76, 175, 80, 0.1);
+  cursor: pointer;
+}
+
+/* Dark mode table */
+body.dark-mode th {
+  background: #333;
+  color: lightgreen;
+}
+body.dark-mode table, 
+body.dark-mode th, 
+body.dark-mode td {
+  border-color: #555;
+}
+
+/* ---------- Pagination ---------- */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.pagination button {
+  padding: 8px 12px;
+  border: none;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+  border-radius: 50px;
+}
+.pagination button.disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+/* ---------- Modal ---------- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  overflow-y: auto;
+}
+.modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+}
+body.dark-mode .modal-content {
+  background: #1e1e1e;
+  color: #eee;
+}
+.close {
+  float: right;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+  thead {
+    display: none;
+  }
+  tr {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  td {
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+  }
+  td::before {
+    content: attr(data-label);
+    font-weight: bold;
+  }
+}
+  </style>
+
+  <script>
+const API_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=250";
+const cryptoTableBody = document.querySelector("#crypto-table tbody");
+const searchInput = document.getElementById("search");
+const themeToggle = document.getElementById("theme-toggle");
+const paginationControls = document.getElementById("pagination-controls");
+
+let cryptoData = [];
+let currentPage = 1;
+const coinsPerPage = 25;
+let filteredData = [];
+
+// Fetch crypto list
+async function fetchCryptoData() {
+  try {
+    const response = await fetch(API_URL);
+    const data = await response.json();
+    cryptoData = data;
+    filteredData = cryptoData;
+    displayPage(currentPage);
+    renderPagination();
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    cryptoTableBody.innerHTML = `<tr><td colspan="5">Failed to load data.</td></tr>`;
+  }
+}
+
+// Fetch single coin details
+async function fetchCoinDetails(id) {
+  try {
+    const res = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
+    const coin = await res.json();
+    showCoinModal(coin);
+  } catch (err) {
+    console.error("Error fetching coin details:", err);
+  }
+}
+
+// Display paginated coins
+function displayPage(page) {
+  cryptoTableBody.innerHTML = "";
+  const start = (page - 1) * coinsPerPage;
+  const end = start + coinsPerPage;
+  const coinsToShow = filteredData.slice(start, end);
+
+  coinsToShow.forEach((coin, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td data-label="#">${start + index + 1}</td>
+      <td data-label="Coin">
+        <img src="${coin.image}" alt="${coin.name}" width="25"> ${coin.name}
+      </td>
+      <td data-label="Symbol">${coin.symbol.toUpperCase()}</td>
+      <td data-label="Price">$${coin.current_price.toLocaleString()}</td>
+      <td data-label="Market Cap">$${coin.market_cap.toLocaleString()}</td>
+    `;
+    row.addEventListener("click", () => fetchCoinDetails(coin.id));
+    cryptoTableBody.appendChild(row);
+  });
+}
+
+// Pagination
+function renderPagination() {
+  const totalPages = Math.ceil(filteredData.length / coinsPerPage);
+  paginationControls.innerHTML = "";
+
+  const prevButton = document.createElement("button");
+  prevButton.textContent = "Previous";
+  prevButton.disabled = currentPage === 1;
+  prevButton.classList.toggle("disabled", prevButton.disabled);
+  prevButton.addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      displayPage(currentPage);
+      renderPagination();
+    }
+  });
+
+  const nextButton = document.createElement("button");
+  nextButton.textContent = "Next";
+  nextButton.disabled = currentPage === totalPages;
+  nextButton.classList.toggle("disabled", nextButton.disabled);
+  nextButton.addEventListener("click", () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      displayPage(currentPage);
+      renderPagination();
+    }
+  });
+
+  paginationControls.appendChild(prevButton);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const pageBtn = document.createElement("button");
+    pageBtn.textContent = i;
+    if (i === currentPage) pageBtn.style.fontWeight = "bold";
+    pageBtn.addEventListener("click", () => {
+      currentPage = i;
+      displayPage(currentPage);
+      renderPagination();
+    });
+    paginationControls.appendChild(pageBtn);
+  }
+
+  paginationControls.appendChild(nextButton);
+}
+
+// Modal display
+const modal = document.getElementById("crypto-modal");
+const modalBody = document.getElementById("modal-body");
+const closeModal = document.querySelector(".close");
+
+function showCoinModal(coin) {
+  modal.style.display = "block";
+  modalBody.innerHTML = `
+    <h2><img src="${coin.image.small}" alt="${coin.name}"> ${coin.name} (${coin.symbol.toUpperCase()})</h2>
+    <p><b>Current Price:</b> $${coin.market_data.current_price.usd.toLocaleString()}</p>
+    <p><b>Market Cap:</b> $${coin.market_data.market_cap.usd.toLocaleString()}</p>
+    <p><b>Total Volume:</b> $${coin.market_data.total_volume.usd.toLocaleString()}</p>
+    <p><b>24h Change:</b> ${coin.market_data.price_change_percentage_24h.toFixed(2)}%</p>
+    <p><b>24h High:</b> $${coin.market_data.high_24h.usd.toLocaleString()}</p>
+    <p><b>24h Low:</b> $${coin.market_data.low_24h.usd.toLocaleString()}</p>
+    <p><b>Description:</b> ${coin.description.en ? coin.description.en.split(". ")[0] + "." : "No description available."}</p>
+  `;
+}
+closeModal.onclick = () => { modal.style.display = "none"; }
+window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; }
+
+// Search
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.toLowerCase();
+  filteredData = cryptoData.filter(coin => coin.name.toLowerCase().includes(query));
+  currentPage = 1;
+  displayPage(currentPage);
+  renderPagination();
+});
+
+// Theme toggle
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  themeToggle.textContent = document.body.classList.contains("dark-mode") ? "Light Mode" : "Dark Mode";
+});
+
+// Initial fetch
+fetchCryptoData();
+setInterval(fetchCryptoData, 60000);
+  </script>
+</body>
+</html>
